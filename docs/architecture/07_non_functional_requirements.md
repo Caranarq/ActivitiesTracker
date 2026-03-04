@@ -209,9 +209,10 @@ The system must:
 # 11. Stack and Packaging Constraints (V1)
 
 - The V1 reference implementation stack is:
+  - C# / .NET as implementation language/runtime
   - WPF (.NET) for UI
   - SQLite for local cache and sync queue
-  - Google OAuth + Google Sheets APIs via .NET libraries
+  - Google OAuth + Google Sheets APIs via official .NET libraries
 - The deliverable MUST support a portable, self-contained distribution:
   - Running on Windows 10 without requiring admin privileges
   - No external runtime installation required by the user for execution

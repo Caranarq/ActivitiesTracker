@@ -1,12 +1,12 @@
 # 03 — Happy Path Flows (V1)
 
 This document defines the step-by-step workflows the application must support in V1.
-Scope includes: dataset creation/opening, activity/event logging (duration/instant/open-ended), sleep segment logging, view usage, offline-first behavior, sync, and user-driven conflict resolution.
+Scope includes: dataset creation/opening, activity/event logging (duration/instant/open-ended), activity segment logging for daily cycles, view usage, offline-first behavior, sync, and user-driven conflict resolution.
 
 ## Terminology
 
 - Dataset: A paired configuration pointing to two Google Sheets (or two tabs/worksheets under one spreadsheet, TBD later):
-  - Sleep+Activity sheet
+  - Activity Sheet
   - Events sheet
 - Local Cache: Local stored copy of the dataset used for offline work.
 - Pending Changes Queue: Local list of unsynced mutations to be applied to Sheets when online.
@@ -62,7 +62,7 @@ Preconditions:
 Steps:
 1. App prompts for Google authentication (OAuth) if not already authenticated.
 2. App asks user for:
-   - Sleep+Activity Sheet link OR a target Spreadsheet link where the app can create required tabs (exact mechanics TBD later).
+   - Activity Sheet link OR a target Spreadsheet link where the app can create required tabs (exact mechanics TBD later).
    - Events Sheet link OR create target.
    - Dataset display name (for Recent Datasets list).
 3. User confirms creation.
@@ -111,7 +111,7 @@ Trigger:
 
 Steps:
 1. App prompts user to provide:
-   - Sleep+Activity Sheet link
+   - Activity Sheet link
    - Events Sheet link
    - Dataset display name (optional but recommended)
 2. App checks connectivity state:
@@ -187,6 +187,7 @@ Steps:
 3. User clicks Save.
 4. App writes change (online/offline rules as in F4).
 5. Active open-ended activities appear in a visible “Active” list (UI surface TBD, but behavior required).
+6. No `activity_segments` record is auto-created from this event. If desired, the user must log the corresponding activity segment manually (see F9).
 
 Acceptance Criteria:
 - Open-ended activities are clearly distinguishable (no end time).
@@ -206,6 +207,7 @@ Steps:
 4. App validates End >= Start.
 5. App writes update (online/offline rules).
 6. Activity disappears from “Active” list and becomes a normal duration record.
+7. Closing an open-ended event does not auto-generate or update any `activity_segments` rows.
 
 Acceptance Criteria:
 - Close operation works offline and queues mutation.
@@ -243,10 +245,10 @@ Acceptance Criteria:
 
 ---
 
-## Flow F9 — Log Sleep / Daily Cycle Segment (Manual Entry)
+## Flow F9 — Log Activity Segment (Manual Entry)
 
 Trigger:
-- User is in Sleep/Daily Cycles view and clicks “Add Segment”.
+- User is in Daily Cycles view and clicks “Add Segment” (or uses a preset such as Sleep-only).
 
 Steps:
 1. App opens Segment Editor:

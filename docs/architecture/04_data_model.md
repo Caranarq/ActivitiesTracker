@@ -7,10 +7,10 @@ This document defines:
 
 ## 1. Data Source Topology (DECIDED)
 
-### 1.1 Sleep+Activity
-- Exactly ONE active Sleep+Activity Google Spreadsheet is used at a time.
+### 1.1 Activity Sheet
+- Exactly ONE active Activity Sheet Google Spreadsheet is used at a time.
 - This Spreadsheet is canonical for:
-  - `sleep_segments`
+  - `activity_segments`
   - shared configuration tabs such as `categories` and `view_configs` (see section 3)
 
 ### 1.2 Events
@@ -50,11 +50,11 @@ The client updates `updated_at` on every mutation.
 
 Important: Because sources are independent, the same tab schemas can exist in multiple spreadsheets.
 In V1:
-- The Sleep+Activity spreadsheet MUST contain the shared configuration tabs.
-- Each Google-Sheets-based Event source spreadsheet MAY also contain configuration tabs, but the canonical “shared” configuration lives in Sleep+Activity by default (see 3.6).
+- The Activity Sheet spreadsheet MUST contain the shared configuration tabs.
+- Each Google-Sheets-based Event source spreadsheet MAY also contain configuration tabs, but the canonical “shared” configuration lives in Activity Sheet by default (see 3.6).
 
 ### 3.1 `categories` (Shared Taxonomy) — DECIDED (C1)
-Shared categories/labels used by both events and sleep segments.
+Shared categories/labels used by both events and activity segments.
 
 | ID | Column | Type | Required | Notes |
 |----|--------|------|----------|------|
@@ -112,39 +112,39 @@ Required V1 recurrence capabilities:
 - Monthly: last day of month
 - Weekly interval
 
-### 3.4 `sleep_segments` — DECIDED (D2)
-Stored in the Sleep+Activity spreadsheet.
+### 3.4 `activity_segments` — DECIDED (D2)
+Stored in the Activity Sheet spreadsheet.
 
 Rule D2:
-- Canonical `sleep_segments` rows MUST NOT cross midnight boundaries.
+- Canonical `activity_segments` rows MUST NOT cross midnight boundaries.
 - If user enters a segment crossing midnight, the client MUST split it into two rows at 00:00 local time.
 
 | ID | Column | Type | Required | Notes |
 |----|--------|------|----------|------|
-| S1 | id | string (UUID) | yes | Primary key |
-| S2 | date_key | string | yes | `YYYY-MM-DD` (local date for grouping) |
-| S3 | start_at | datetime string | yes | ISO 8601 |
-| S4 | end_at | datetime string | yes | ISO 8601 |
-| S5 | tz_capture | string | yes | IANA TZ |
-| S6 | category_id | string (UUID) | yes | FK -> categories.id |
-| S7 | linked_tag | string | no | Optional correlation to event/activity tag |
-| S8 | notes | string | no | Free text |
-| S9 | is_deleted | boolean | yes | Default false |
-| S10 | deleted_at | datetime string | no | Nullable |
-| S11 | updated_at | datetime string | yes | ISO 8601 |
-| S12 | meta_json | string | no | JSON string |
+| A1 | id | string (UUID) | yes | Primary key |
+| A2 | date_key | string | yes | `YYYY-MM-DD` (local date for grouping) |
+| A3 | start_at | datetime string | yes | ISO 8601 |
+| A4 | end_at | datetime string | yes | ISO 8601 |
+| A5 | tz_capture | string | yes | IANA TZ |
+| A6 | category_id | string (UUID) | yes | FK -> categories.id |
+| A7 | linked_tag | string | no | Optional manual correlation to `events.tag` |
+| A8 | notes | string | no | Free text |
+| A9 | is_deleted | boolean | yes | Default false |
+| A10 | deleted_at | datetime string | no | Nullable |
+| A11 | updated_at | datetime string | yes | ISO 8601 |
+| A12 | meta_json | string | no | JSON string |
 
 Validation:
 - `start_at < end_at`
 - `date_key` must match local date of `start_at` in `tz_capture` after applying D2 split.
 
 ### 3.5 `view_configs`
-Stored canonically in Sleep+Activity spreadsheet (single user).
+Stored canonically in Activity Sheet spreadsheet (single user).
 
 | ID | Column | Type | Required | Notes |
 |----|--------|------|----------|------|
 | V1 | id | string (UUID) | yes | Primary key |
-| V2 | view_type | enum | yes | `events_timeline`, `sleep_cycles` |
+| V2 | view_type | enum | yes | `events_timeline`, `daily_cycles` |
 | V3 | name | string | yes | Display name |
 | V4 | config_json | string | yes | JSON string (schema defined in UI States) |
 | V5 | is_deleted | boolean | yes | Default false |
@@ -152,7 +152,7 @@ Stored canonically in Sleep+Activity spreadsheet (single user).
 | V7 | updated_at | datetime string | yes | ISO 8601 |
 
 ### 3.6 Configuration Canonicality Rule (V1)
-- The Sleep+Activity spreadsheet is the canonical home for:
+- The Activity Sheet spreadsheet is the canonical home for:
   - `categories`
   - `view_configs`
 - Event sources reference `categories.id` values from that canonical taxonomy.
@@ -170,13 +170,13 @@ Tracks all configured sources.
 
 - `source_id` (UUID)
 - `source_type` enum:
-  - `sleep_sheet`
+  - `activity_sheet`
   - `google_sheets_events`
   - future: `google_calendar`
 - `display_name`
 - Connection pointer(s):
   - `spreadsheet_id` and/or URL
-- `is_active` boolean (only one `sleep_sheet` active; multiple event sources active allowed)
+- `is_active` boolean (only one `activity_sheet` active; multiple event sources active allowed)
 - `last_opened_at`
 
 ### 4.2 Local Cache (per source, independent)
@@ -203,7 +203,7 @@ Ordering:
 
 ### 4.4 Recent Datasets / Recents UI
 Recent entries correspond to sources and combinations:
-- Must show the active Sleep+Activity source
+- Must show the active Activity Sheet source
 - Must show recently used Event sources
 - Must indicate offline availability (cache present)
 
