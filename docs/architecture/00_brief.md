@@ -4,7 +4,7 @@
 This specification defines V1 (first usable production version).
 
 ## One-liner
-A portable Windows 10 desktop application for tracking time-based activities, sleep cycles, and externally scheduled events, using Google Sheets as the canonical source of truth and supporting configurable visualizations beyond traditional Gantt views.
+A portable Windows 10 desktop application for tracking time-based activities (including sleep as a category) and externally scheduled events, using Google Sheets as the canonical source of truth and supporting configurable visualizations beyond traditional Gantt views.
 
 ## Target User
 - Single primary user (daily use).
@@ -16,7 +16,7 @@ All time-based records are stored in Google Sheets (canonical source of truth).
 The Windows application is a portable client that reads/writes Sheets via OAuth and can work offline with later sync.
 
 Separate Sheets:
-- Sheet A: Sleep + Activity data.
+- Sheet A: Activity Sheet data (includes sleep as any other category).
 - Sheet B: Events.
 
 ## Platform Constraints
@@ -45,7 +45,7 @@ Attributes:
 
 Relationships and CPM logic are explicitly out of scope for V1.
 
-### 2. Sleep / Daily Cycle Segment
+### 2. Activity Segment (Daily Cycles)
 
 - Precise timestamps (no fixed 15-minute blocks).
 - Manual entry required in V1.
@@ -73,7 +73,7 @@ The application generates occurrences dynamically for visualization.
 - Supports duration, instant, and open-ended records.
 - Configurable filters, grouping, and color mapping.
 
-2. Sleep / Activity Daily Cycles
+2. Daily Cycles (with presets such as Sleep-only)
 - Date rows on left.
 - Horizontal segmented bar per date.
 - Color-coded by category.
@@ -118,6 +118,6 @@ Future:
 - User can reopen dataset reliably.
 - User can log/edit duration, instant, and open-ended activities.
 - Recurring events render correctly.
-- Sleep/activity patterns render correctly.
+- Activity patterns (including sleep presets) render correctly.
 - View configuration persists.
 - Offline mode works and syncs safely.

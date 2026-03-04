@@ -1,0 +1,63 @@
+<Window x:Class="ActivitiesTracker.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ActivitiesTracker" Height="520" Width="900">
+    <DockPanel Margin="12">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Text="Status:" FontWeight="Bold" />
+            <TextBlock Text=" {Binding Connectivity}" Margin="6,0,20,0"/>
+            <TextBlock Text="Pending:" FontWeight="Bold" />
+            <TextBlock Text=" {Binding PendingCount}" Margin="6,0,20,0"/>
+            <Button Content="Sync Now" Width="90" Command="{Binding SyncNowCommand}" />
+        </StackPanel>
+
+        <TabControl>
+            <TabItem Header="Events Timeline">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Add Open-Ended Event" Width="180" Command="{Binding AddOpenEndedEventCommand}"/>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Events}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding TimeType}"/>
+                            <DataGridTextColumn Header="Start" Binding="{Binding StartAt}"/>
+                            <DataGridTextColumn Header="End" Binding="{Binding EndAt}"/>
+                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Daily Cycles">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Add Activity Segment" Width="160" Command="{Binding AddActivitySegmentCommand}"/>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Segments}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding DateKey}"/>
+                            <DataGridTextColumn Header="Start" Binding="{Binding StartAt}"/>
+                            <DataGridTextColumn Header="End" Binding="{Binding EndAt}"/>
+                            <DataGridTextColumn Header="Category" Binding="{Binding CategoryId}"/>
+                            <DataGridTextColumn Header="LinkedTag" Binding="{Binding LinkedTag}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Settings">
+                <StackPanel Margin="8">
+                    <TextBlock Text="Local storage path:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding DatabasePath}" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                    <TextBlock Text="Credentials path (OAuth):" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CredentialsPath}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
