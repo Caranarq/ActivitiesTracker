@@ -125,7 +125,14 @@ VALUES ($id, $dateKey, $startAt, $endAt, $tzCapture, $categoryId, $linkedTag, NU
         catch (Exception ex)
         {
             _log.Error("SyncNow failed", ex);
-            MessageBox.Show($"Sync error: {ex.Message}", "Sync", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (ex.Message.Contains("Authentication required"))
+            {
+                MessageBox.Show($"Google Authentication required. Please place your credentials.json file in:\n{AppPaths.CredentialsPath}", "Sync", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                MessageBox.Show($"Sync error: {ex.Message}", "Sync", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 
